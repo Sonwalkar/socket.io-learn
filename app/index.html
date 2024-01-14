@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>socket.io</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.socket.io/socket.io-3.0.0.js"></script>
+    <script defer src ="app.js"></script>
+  </head>
+  <body>
+    <ul></ul>
+
+    <div class ="window">
+      <div class="userList">
+        <div class="active">Naruto Uzimaki</div>
+        <div class="inactive">Naruto Uzimaki</div>
+      </div>
+      <div class="chat">
+        <div class="actions">
+          <input placeholder="Type Something..." id="message" class="message"/>
+          <button id="send" class="send">send</button>
+        </div>
+
+        <div class="activeChat">
+          <!-- <div class="fromYou">
+            <div>hello</div>
+            <div>hello again... akydhsfbakluyfdbkl yue fu bueysbfeckbiesybugbsleiufyblsiuyevbip;seygrfbilyb</div>
+          </div>
+          <div class="fromOther">
+            <div>hi</div>
+          </div>
+          <div class="fromYou">
+            <div>hey</div>
+          </div>
+          <div class="fromOther">
+            <div>hey, How are you?</div>
+          </div> -->
+        </div>
+      </div>
+    </div>
+    <input placeholder="room" id="room"/>
+    <button id="join">Join</button>
+  </body>
+</html>
