@@ -68,6 +68,12 @@ socket.on("activeRoomChatOnSwitch", chatHistory => {
 
   const activeChatDiv = document.querySelector(".window .chat .activeChat");
 
+  // remove all chat on click on tabs
+  const tabsActiveChatDivs = document.querySelectorAll(".window .chat .activeChat > div");
+  for (const div of tabsActiveChatDivs) {
+    div.remove();
+  }
+
   for (const chat of chatHistory) {
     if (chat.from === socket.id) {
       const fromOtherDiv = document.createElement("div");
