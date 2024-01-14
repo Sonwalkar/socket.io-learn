@@ -62,7 +62,7 @@ io.on("connection", (socket) => {
     }
 
     console.log("chatHistory: ", chatHistory);
-    socket.to(activeRoomId).emit("activeRoomChatOnSwitch", chatHistory);
+    socket.emit("activeRoomChatOnSwitch", chatHistory);
   });
 
   io.emit("clientList", clients);
