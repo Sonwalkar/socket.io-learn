@@ -9,6 +9,17 @@
 
 }
 
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #151515;
+  color: #f6f6f6;
+  border-radius: 20px 20px 0 0;
+  margin-bottom: 20px;
+}
+
 .window{
   background-color: #fff !important;
   display: flex;

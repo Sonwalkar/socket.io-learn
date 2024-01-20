@@ -2,7 +2,7 @@ const socket = io("ws://localhost:5002");
 
 socket.on('connect', () => {
   const el = document.createElement('li');
-  el.innerHTML = `<b>Your Id - ${socket.id}`;
+  el.innerHTML = `<b>Your Id is: ${socket.id}`;
   document.querySelector("ul").appendChild(el);
 })
 
@@ -114,5 +114,12 @@ document.querySelector("#send").addEventListener("click", () => {
 
 document.querySelector("#join").addEventListener("click", () => {
   const room = document.querySelector("#room").value;
+
+  const newRoomDiv = document.createElement("div");
+  newRoomDiv.className = "inactive";
+  newRoomDiv.innerText = room;
+  newRoomDiv.dataset.value = room;
+  document.querySelector(".window .userList").appendChild(newRoomDiv);
+
   socket.emit("join-room", room);
 });
