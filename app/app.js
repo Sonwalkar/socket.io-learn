@@ -6,8 +6,9 @@ socket.on('connect', () => {
   document.querySelector("ul").appendChild(el);
 })
 
-socket.on('clientList', (clients) => {
+socket.on('clientList', (clients, customRooms) => {
   console.log("clients: ", clients);
+  console.log("customRooms: ", customRooms);
 
   const inactiveDivs = document.querySelectorAll(".window .userList > div.inactive");
   for (const div of inactiveDivs) {
@@ -22,6 +23,15 @@ socket.on('clientList', (clients) => {
     div.dataset.value = client.socketId;
     document.querySelector(".window .userList").appendChild(div);
   }
+  for (const customRoom in customRooms) {
+    if (!customRooms[customRoom].includes(socket.id)) { continue; }
+    console.log("🚀 ~ socket.on ~ customRoom:", customRoom)
+    const div = document.createElement("div");
+    div.className = "inactive";
+    div.innerText = customRoom;
+    div.dataset.value = customRoom;
+    document.querySelector(".window .userList").appendChild(div);
+  }
 })
 
 
@@ -29,6 +39,22 @@ socket.on("message", text => {
   console.log("message", text);
 
   if (document.querySelector(".window .userList .active").dataset.value === text.socketId) {
+    if (text.socketId === socket.id) {
+      const fromOtherDiv = document.createElement("div");
+      fromOtherDiv.className = "fromYou";
+      const div = document.createElement("div");
+      div.innerText = text.message;
+      fromOtherDiv.appendChild(div);
+      document.querySelector(".window .chat .activeChat").appendChild(fromOtherDiv);
+    } else {
+      const fromOtherDiv = document.createElement("div");
+      fromOtherDiv.className = "fromOther";
+      const div = document.createElement("div");
+      div.innerText = text.message;
+      fromOtherDiv.appendChild(div);
+      document.querySelector(".window .chat .activeChat").appendChild(fromOtherDiv);
+    }
+  } else if (document.querySelector(".window .userList .active").dataset.value === text.room) {
     if (text.socketId === socket.id) {
       const fromOtherDiv = document.createElement("div");
       fromOtherDiv.className = "fromYou";
