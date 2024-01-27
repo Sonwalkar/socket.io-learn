@@ -1,48 +1,25 @@
 const socket = io("ws://localhost:5003"); // Call for connect to server
-import { updateClientIdInHeader } from "./helper.js";
+import {
+  showClientIdInHeader,
+  removeAllUsersAndGroupFromUI,
+  showUsersAndGroup,
+} from "./helper.js";
 
 // on connect show the socket id in the top bar.
 socket.on("connect", () => {
-  updateClientIdInHeader(socket);
+  showClientIdInHeader(socket);
 });
 
-// on new connection list down all the clients connected to clients to servers.
+/**
+ * on new connection list down all the clients connected to clients to servers.
+ * Whenever a new client is connected to the server, the server emits the "clientList" event to all the clients connected to the server.
+ */
 socket.on("clientList", (clients, customRooms) => {
-  /* The code is selecting all the inactive user div elements within the ".window .userList" container
-  and removing them from the DOM. */
-  const inactiveDivs = document.querySelectorAll(
-    ".window .userList > div.inactive"
-  );
-  for (const div of inactiveDivs) {
-    div.remove();
-  }
+  // remove all users and groups from UI.
+  const activeUserTabDetails = removeAllUsersAndGroupFromUI();
 
-  /* The code is iterating over an array of `clients` and creating a new `<div>` element for each
-  client. */
-  for (const client of clients) {
-    const div = document.createElement("div");
-    div.className = "inactive";
-    div.innerText = client.clientName;
-    div.dataset.value = client.socketId;
-    document.querySelector(".window .userList").appendChild(div);
-  }
-  /* The code is iterating over each key (customRoom) in the customRooms object. It checks if the value
-  associated with the customRoom key includes the socket.id. If it does not include the socket.id,
-  the continue statement is used to skip the current iteration and move to the next iteration. If it
-  does include the socket.id, it creates a new div element, sets its class name to "inactive", sets
-  its inner text to the customRoom key, sets its dataset value to the customRoom key, and appends it
-  to the ".window .userList" element in the DOM. Finally, it logs the customRoom key to the console. */
-  for (const customRoom in customRooms) {
-    if (!customRooms[customRoom].includes(socket.id)) {
-      continue;
-    }
-    console.log("🚀 ~ socket.on ~ customRoom:", customRoom);
-    const div = document.createElement("div");
-    div.className = "inactive";
-    div.innerText = customRoom;
-    div.dataset.value = customRoom;
-    document.querySelector(".window .userList").appendChild(div);
-  }
+  // Show all the users and groups in UI.
+  showUsersAndGroup(clients, customRooms, activeUserTabDetails);
 });
 
 socket.on("message", (text) => {
