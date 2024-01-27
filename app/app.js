@@ -1,10 +1,9 @@
-const socket = io("ws://localhost:5002"); // Call for connect to server
+const socket = io("ws://localhost:5003"); // Call for connect to server
+import { updateClientIdInHeader } from "./helper.js";
 
 // on connect show the socket id in the top bar.
 socket.on("connect", () => {
-  const el = document.createElement("li");
-  el.innerHTML = `<b>Your Id is: ${socket.id}`;
-  document.querySelector("ul").appendChild(el);
+  updateClientIdInHeader(socket);
 });
 
 // on new connection list down all the clients connected to clients to servers.
