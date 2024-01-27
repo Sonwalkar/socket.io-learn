@@ -1,21 +1,25 @@
-const socket = io("ws://localhost:5002");
+const socket = io("ws://localhost:5002"); // Call for connect to server
 
-socket.on('connect', () => {
-  const el = document.createElement('li');
+// on connect show the socket id in the top bar.
+socket.on("connect", () => {
+  const el = document.createElement("li");
   el.innerHTML = `<b>Your Id is: ${socket.id}`;
   document.querySelector("ul").appendChild(el);
-})
+});
 
-socket.on('clientList', (clients, customRooms) => {
-  console.log("clients: ", clients);
-  console.log("customRooms: ", customRooms);
-
-  const inactiveDivs = document.querySelectorAll(".window .userList > div.inactive");
+// on new connection list down all the clients connected to clients to servers.
+socket.on("clientList", (clients, customRooms) => {
+  /* The code is selecting all the inactive user div elements within the ".window .userList" container
+  and removing them from the DOM. */
+  const inactiveDivs = document.querySelectorAll(
+    ".window .userList > div.inactive"
+  );
   for (const div of inactiveDivs) {
     div.remove();
-    console.log("removed inactive users");
   }
 
+  /* The code is iterating over an array of `clients` and creating a new `<div>` element for each
+  client. */
   for (const client of clients) {
     const div = document.createElement("div");
     div.className = "inactive";
@@ -23,56 +27,76 @@ socket.on('clientList', (clients, customRooms) => {
     div.dataset.value = client.socketId;
     document.querySelector(".window .userList").appendChild(div);
   }
+  /* The code is iterating over each key (customRoom) in the customRooms object. It checks if the value
+  associated with the customRoom key includes the socket.id. If it does not include the socket.id,
+  the continue statement is used to skip the current iteration and move to the next iteration. If it
+  does include the socket.id, it creates a new div element, sets its class name to "inactive", sets
+  its inner text to the customRoom key, sets its dataset value to the customRoom key, and appends it
+  to the ".window .userList" element in the DOM. Finally, it logs the customRoom key to the console. */
   for (const customRoom in customRooms) {
-    if (!customRooms[customRoom].includes(socket.id)) { continue; }
-    console.log("🚀 ~ socket.on ~ customRoom:", customRoom)
+    if (!customRooms[customRoom].includes(socket.id)) {
+      continue;
+    }
+    console.log("🚀 ~ socket.on ~ customRoom:", customRoom);
     const div = document.createElement("div");
     div.className = "inactive";
     div.innerText = customRoom;
     div.dataset.value = customRoom;
     document.querySelector(".window .userList").appendChild(div);
   }
-})
+});
 
-
-socket.on("message", text => {
+socket.on("message", (text) => {
   console.log("message", text);
 
-  if (document.querySelector(".window .userList .active").dataset.value === text.socketId) {
+  if (
+    document.querySelector(".window .userList .active").dataset.value ===
+    text.socketId
+  ) {
     if (text.socketId === socket.id) {
       const fromOtherDiv = document.createElement("div");
       fromOtherDiv.className = "fromYou";
       const div = document.createElement("div");
       div.innerText = text.message;
       fromOtherDiv.appendChild(div);
-      document.querySelector(".window .chat .activeChat").appendChild(fromOtherDiv);
+      document
+        .querySelector(".window .chat .activeChat")
+        .appendChild(fromOtherDiv);
     } else {
       const fromOtherDiv = document.createElement("div");
       fromOtherDiv.className = "fromOther";
       const div = document.createElement("div");
       div.innerText = text.message;
       fromOtherDiv.appendChild(div);
-      document.querySelector(".window .chat .activeChat").appendChild(fromOtherDiv);
+      document
+        .querySelector(".window .chat .activeChat")
+        .appendChild(fromOtherDiv);
     }
-  } else if (document.querySelector(".window .userList .active").dataset.value === text.room) {
+  } else if (
+    document.querySelector(".window .userList .active").dataset.value ===
+    text.room
+  ) {
     if (text.socketId === socket.id) {
       const fromOtherDiv = document.createElement("div");
       fromOtherDiv.className = "fromYou";
       const div = document.createElement("div");
       div.innerText = text.message;
       fromOtherDiv.appendChild(div);
-      document.querySelector(".window .chat .activeChat").appendChild(fromOtherDiv);
+      document
+        .querySelector(".window .chat .activeChat")
+        .appendChild(fromOtherDiv);
     } else {
       const fromOtherDiv = document.createElement("div");
       fromOtherDiv.className = "fromOther";
       const div = document.createElement("div");
       div.innerText = text.message;
       fromOtherDiv.appendChild(div);
-      document.querySelector(".window .chat .activeChat").appendChild(fromOtherDiv);
+      document
+        .querySelector(".window .chat .activeChat")
+        .appendChild(fromOtherDiv);
     }
   }
-
-})
+});
 
 // it selects client(socketId) to make active and inactive look
 document.querySelector(".window .userList").addEventListener("click", (e) => {
@@ -84,18 +108,21 @@ document.querySelector(".window .userList").addEventListener("click", (e) => {
   e.target.classList.add("active");
   e.target.classList.remove("inactive");
 
-  const otherClientId = document.querySelector(".window .userList .active").dataset.value;
+  const otherClientId = document.querySelector(".window .userList .active")
+    .dataset.value;
 
-  socket.emit("activeRoomSwitch", socket.id, otherClientId)
-})
+  socket.emit("activeRoomSwitch", socket.id, otherClientId);
+});
 
-socket.on("activeRoomChatOnSwitch", chatHistory => {
+socket.on("activeRoomChatOnSwitch", (chatHistory) => {
   console.log("chatHistory: ", chatHistory);
 
   const activeChatDiv = document.querySelector(".window .chat .activeChat");
 
   // remove all chat on click on tabs
-  const tabsActiveChatDivs = document.querySelectorAll(".window .chat .activeChat > div");
+  const tabsActiveChatDivs = document.querySelectorAll(
+    ".window .chat .activeChat > div"
+  );
   for (const div of tabsActiveChatDivs) {
     div.remove();
   }
@@ -121,7 +148,8 @@ socket.on("activeRoomChatOnSwitch", chatHistory => {
 
 document.querySelector("#send").addEventListener("click", () => {
   const text = document.querySelector("#message").value;
-  const room = document.querySelector(".window .userList .active").dataset.value;
+  const room = document.querySelector(".window .userList .active").dataset
+    .value;
 
   // add message to chat window as sender
   const fromOtherDiv = document.createElement("div");
@@ -131,12 +159,11 @@ document.querySelector("#send").addEventListener("click", () => {
   fromOtherDiv.appendChild(div);
   document.querySelector(".window .chat .activeChat").appendChild(fromOtherDiv);
 
-
   console.log("ele", document.querySelector(".window .userList .active"));
   console.log("room: ", room);
   socket.emit("message", text, room);
   document.querySelector("#message").value = "";
-})
+});
 
 document.querySelector("#join").addEventListener("click", () => {
   const room = document.querySelector("#room").value;
