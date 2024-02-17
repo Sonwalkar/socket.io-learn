@@ -11,7 +11,10 @@ import {
 const server = http.createServer();
 
 const io = new serverSocketIo(server, {
-  cors: { origin: "*" },
+  cors: {
+    origin: "http://127.0.0.1:5500/", // Replace with your frontend's URL
+    methods: ["GET", "POST"], // Allow GET and POST methods
+  },
 });
 
 const clients = [];
