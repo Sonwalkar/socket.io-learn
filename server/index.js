@@ -11,7 +11,7 @@ import {
 const server = http.createServer();
 
 const io = new serverSocketIo(server, {
-  cors: { origin: "*" },
+  cors: { origin: "http://127.0.0.1:5500/" },
 });
 
 const clients = [];
