@@ -1,4 +1,5 @@
-const socket = io("ws://localhost:5003"); // Call for connect to server
+const socket = io("ws://204.236.240.185:8080"); // Call for connect to server
+
 import {
   showClientIdInHeader,
   removeAllUsersAndGroupFromUI,
