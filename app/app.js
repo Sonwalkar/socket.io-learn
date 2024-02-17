@@ -1,14 +1,20 @@
-const socket = io("ws://204.236.240.185:8080"); // Call for connect to server
-
 import {
   showClientIdInHeader,
   removeAllUsersAndGroupFromUI,
   showUsersAndGroup,
 } from "./helper.js";
 
+const socket = io("ws://localhost:8080"); // Call for connect to server
+
 // on connect show the socket id in the top bar.
 socket.on("connect", () => {
   showClientIdInHeader(socket);
+});
+
+// On tab or window close disconnect the socket connection.
+window.addEventListener("beforeunload", (event) => {
+  event.preventDefault();
+  event.returnValue = "";
 });
 
 /**

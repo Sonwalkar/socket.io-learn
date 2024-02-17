@@ -51,6 +51,12 @@ io.on("connection", (socket) => {
     getChatHistory(socket, clientId, activeRoomId, customRooms, chatPerClient);
   });
 
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+    // TODO: if user disconnects, disable send message for other users in the room.
+    socket.disconnect();
+  });
+
   // add client on new connection.
   addClientOnConnections(socket, clients);
   // emit message on new connection.
